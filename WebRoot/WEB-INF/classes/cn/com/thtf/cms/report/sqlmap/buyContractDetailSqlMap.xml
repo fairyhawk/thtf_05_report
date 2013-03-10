@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="buyContractDetail">
+	<typeAlias alias="rBuyContractDetailEntity"
+		type="cn.com.thtf.cms.report.entity.RBuyContractDetailEntity" />
+	<typeAlias alias="queryDataBase" type="cn.com.thtf.cms.report.dto.BaseQueryData" />
+	<typeAlias alias="rBuyContractDetailDto"
+		type="cn.com.thtf.cms.report.dto.RBuyContractDetailDto" />
+	<select id="selBuyContractDetailList" parameterClass="queryDataBase"
+		resultClass="rBuyContractDetailEntity" remapResults="true">
+		SELECT
+		SQL_CALC_FOUND_ROWS
+		<iterate property="fields" conjunction=",">
+			$fields[]$
+			</iterate>
+		FROM R_BUY_CONTRACT_DETAIL
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="query.productContractCode">
+				PRODUCT_CONTRACT_CODE LIKE CONCAT('%',#query.productContractCode#,'%')
+				</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.productTypeName">
+				product_type_name LIKE CONCAT('%',#query.productTypeName#,'%')
+				</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.supplierName">
+				supplier_name LIKE CONCAT('%',#query.supplierName#,'%')
+				</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.productCode">
+				product_code LIKE CONCAT('%',#query.productCode#,'%')
+				</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.productName">
+				product_name LIKE CONCAT('%',#query.productName#,'%')
+				</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.productType">
+				product_type LIKE CONCAT('%',#query.productType#,'%')
+				</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.buyContractId">
+				buy_contract_id LIKE CONCAT('%',#query.buyContractId#,'%')
+				</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.companyContractCode">
+				company_contract_code LIKE CONCAT('%',#query.companyContractCode#,'%')
+				</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.minRequestDate">
+					<![CDATA[  (request_date is not null and DATE_FORMAT(request_date,'%Y%m%d')>=  DATE_FORMAT(#query.minRequestDate:DATE#,'%Y%m%d'))  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.maxRequestDate">
+					<![CDATA[  (request_date is not null and DATE_FORMAT(request_date,'%Y%m%d')<=  DATE_FORMAT(#query.maxRequestDate:DATE#,'%Y%m%d'))  ]]>
+			</isNotEmpty>
+
+			<!-- 权限判断 -->
+			<!-- 产品总监 -->
+			<isNotEmpty prepend="AND" property="userId">
+				USER_ID = #userId#
+				</isNotEmpty>
+			<isNotEmpty prepend="and" property="userProductList">
+				<iterate property="userProductList" open="(" close=")"
+					conjunction="or">
+					product_type_name = #userProductList[].productTypeName#
+					</iterate>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY $sidx$ $sord$ limit #star#,#rows#
+	</select>
+	<select id="selBuyContractDetailListSum" parameterClass="queryDataBase"
+		resultClass="rBuyContractDetailDto" remapResults="true">
+		SELECT
+		SUM(buy_contract_money) AS sumBuyContractMoney,
+		SUM(in_stock_money) AS sumInStockMoney,
+		SUM(appoint_money) AS sumAppointMoney,
+		SUM(invoice_money) AS sumInvoiceMoney,
+		SUM(buy_back_contract_money) AS sumBuyBackContractMoney,
+		SUM(buy_back_goods_money) AS sumBuyBackGoodsMoney,
+		SUM(fact_in_stock_money) AS sumFactInStockMoney
+		FROM R_BUY_CONTRACT_DETAIL
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="query.productContractCode">
+				PRODUCT_CONTRACT_CODE LIKE CONCAT('%',#query.productContractCode#,'%')
+				</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.productTypeName">
+				product_type_name LIKE CONCAT('%',#query.productTypeName#,'%')
+				</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.supplierName">
+				supplier_name LIKE CONCAT('%',#query.supplierName#,'%')
+				</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.productCode">
+				product_code LIKE CONCAT('%',#query.productCode#,'%')
+				</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.productName">
+				product_name LIKE CONCAT('%',#query.productName#,'%')
+				</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.productType">
+				product_type LIKE CONCAT('%',#query.productType#,'%')
+				</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.buyContractId">
+				buy_contract_id LIKE CONCAT('%',#query.buyContractId#,'%')
+				</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.companyContractCode">
+				company_contract_code LIKE CONCAT('%',#query.companyContractCode#,'%')
+				</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.minRequestDate">
+					<![CDATA[  (request_date is not null and DATE_FORMAT(request_date,'%Y%m%d')>=  DATE_FORMAT(#query.minRequestDate:DATE#,'%Y%m%d'))  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.maxRequestDate">
+					<![CDATA[  (request_date is not null and DATE_FORMAT(request_date,'%Y%m%d')<=  DATE_FORMAT(#query.maxRequestDate:DATE#,'%Y%m%d'))  ]]>
+			</isNotEmpty>
+			<!-- 权限判断 -->
+			<!-- 产品总监 -->
+			<isNotEmpty prepend="AND" property="userId">
+				USER_ID = #userId#
+				</isNotEmpty>
+			<isNotEmpty prepend="and" property="userProductList">
+				<iterate property="userProductList" open="(" close=")"
+					conjunction="or">
+					product_type_name = #userProductList[].productTypeName#
+					</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+</sqlMap>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ehcache.xsd">
+
+	<defaultCache maxElementsInMemory="10000" eternal="false"
+		timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="false"
+		diskSpoolBufferSizeMB="30" maxElementsOnDisk="10" diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="120" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="LoginTokenCache" maxElementsInMemory="1000"
+		maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
+		diskSpoolBufferSizeMB="20" timeToIdleSeconds="0" timeToLiveSeconds="60"
+		memoryStoreEvictionPolicy="LRU" />
+	<!-- 	
+	<cache name="DownloadCache" maxElementsInMemory="1"
+		maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
+		diskSpoolBufferSizeMB="20" timeToIdleSeconds="0" timeToLiveSeconds="86400"
+		memoryStoreEvictionPolicy="LRU" /> -->
+
+</ehcache>

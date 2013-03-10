@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<!-- 后台登录配置 -->
+	<hiddenLogin>
+		<ip>${hiddenLoginIp}</ip>
+	</hiddenLogin>
+	<!-- csv文件保存目录 -->
+	<csvFilePath>${csvFilePath}</csvFilePath>
+	<!-- 预生成的csv文件保存目录 -->
+	<csvTmpFilePath>${csvTmpFilePath}</csvTmpFilePath>
+	<transCsvMaxCount>5</transCsvMaxCount>
+	<!-- 站内信上传附件目录 -->
+	<accessoryFilePath>${accessoryFilePath}</accessoryFilePath>
+	<!--上传文件大小 缺省5M 5 * 1024000 注意更新下面的错误提示信息 -->
+  	<max_post_size>5120000</max_post_size>
+	<!--上传文件过大导致失败的错误提示-->
+    <max_post_size_err_msg>文件不能大于5M</max_post_size_err_msg>
+	<!-- csv文件名称 -->
+	<csvFileName>
+		<!-- 退款 -->
+		<refund>
+			<zh>退款明细.csv</zh>
+			<en>refund.csv</en>
+		</refund>
+		<!-- 回款 -->
+		<mreturn>
+			<zh>回款.csv</zh>
+			<en>mreturn.csv</en>
+		</mreturn>
+		<!-- 发货单汇总 -->
+		<rsendgoodsSummary>
+			<zh>发货单汇总.csv</zh>
+			<en>rsendgoodsSummary.csv</en>
+		</rsendgoodsSummary>
+		<!-- 退票产品明细 -->
+		<sellinvoicedetail>
+			<zh>退票产品明细.csv</zh>
+			<en>sellInvoiceDetail.csv</en>
+		</sellinvoicedetail>
+		<!-- 采购合同收票 -->
+		<receiveInvoice>
+			<zh>采购合同收票.csv</zh>
+			<en>receiveInvoice.csv</en>
+		</receiveInvoice>   
+		<!-- 库存产品明细 -->
+		<stockProductDetail>
+			<zh>库存数量明细.csv</zh>
+			<en>stockProductDetail.csv</en>
+		</stockProductDetail>
+		<!-- 客户销售经理对应 -->
+		<customerSellMagMap>
+			<zh>客户销售经理对应.csv</zh>
+			<en>customerSellMagMap.csv</en>
+		</customerSellMagMap>
+		<!-- 运费分摊 -->
+		<sharing>
+			<zh>运费分摊.csv</zh>
+			<en>sharing.csv</en>
+		</sharing>
+		<!-- 开票汇总 -->
+		<sellInvoice>
+			<zh>开票汇总.csv</zh>
+			<en>sellInvoice.csv</en>
+		</sellInvoice>
+		<!-- 发货单产品明细 -->
+		<sendgoods>
+			<zh>发货单产品明细.csv</zh>
+			<en>sendGoods.csv</en>
+		</sendgoods>
+		<!-- 采购合同汇总 -->
+		<buycontract>
+			<zh>采购合同汇总.csv</zh>
+			<en>buyContract.csv</en>
+		</buycontract>
+		<!-- 采购合同产品明细 -->
+		<buycontractdetail>
+			<zh>采购合同产品明细.csv</zh>
+			<en>buyContractDetail.csv</en>
+		</buycontractdetail>
+		<!-- 客户信用汇总 -->
+		<customercredit>
+			<zh>客户信用明细.csv</zh>
+			<en>customerCredit.csv</en>
+		</customercredit>
+		<!-- 销售合同汇总 -->
+		<sellcontract>
+			<zh>销售合同汇总.csv</zh>
+			<en>sellcontract.csv</en>
+		</sellcontract>
+		<!-- 退货产品明细 -->
+		<sellbackgoodsdetail>
+			<zh>退货产品明细.csv</zh>
+			<en>sellBackGoodsDetail.csv</en>
+		</sellbackgoodsdetail>
+		<!-- 采购付款 -->
+		<buypayment>
+			<zh>采购付款汇总.csv</zh>
+			<en>buyPayment.csv</en>
+		</buypayment>
+		<!-- 采购付款明细 -->
+		<buypaymentdetail>
+			<zh>采购付款明细.csv</zh>
+			<en>buyPaymentDetail.csv</en>
+		</buypaymentdetail>
+		<!-- 合同产品明细 -->
+		<rsellcontractdetail>
+			<zh>销售合同产品明细.csv</zh>
+			<en>sellcontractdetail.csv</en>
+		</rsellcontractdetail>
+		<!-- 入库明细 -->
+		<invoicedetail>
+			<zh>入库单明细.csv</zh>
+			<en>inStockDetail.csv</en>
+		</invoicedetail>
+		<!-- 运费明细 -->
+		<rtransportfaredetail>
+			<zh>运费明细.csv</zh>
+			<en>transportFareDetail.csv</en>
+		</rtransportfaredetail>
+		<!-- 退货合同产品明细 -->
+		<rsellbackcontractdetail>
+			<zh>退货合同产品明细.csv</zh>
+			<en>rsellbackcontractdetail.csv</en>
+		</rsellbackcontractdetail>
+		<!-- 动态盘点 -->
+		<dynamicstocktake>
+			<zh>动态盘点.csv</zh>
+			<en>dynamicstocktake.csv</en>
+		</dynamicstocktake>
+		<busilog>
+			<zh>操作记录.csv</zh>
+			<en>busiLog.csv</en>
+		</busilog>
+	</csvFileName>
+</config>

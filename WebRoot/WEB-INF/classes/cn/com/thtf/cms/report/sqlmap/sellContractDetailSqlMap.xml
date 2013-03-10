@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sellContractDetail">
+
+	<typeAlias alias="sellContractDetailEntity" type="cn.com.thtf.cms.report.entity.RSellContractDetailEntity" />
+	<typeAlias alias="queryDataBase" type="cn.com.thtf.cms.report.dto.BaseQueryData" />
+	<typeAlias alias="rSellContractDetailDto" type="cn.com.thtf.cms.report.dto.RSellContractDetailDto" />
+	
+	<select id="getSellContractDetail" parameterClass="queryDataBase" resultClass="sellContractDetailEntity" remapResults="true">
+		select 
+			SQL_CALC_FOUND_ROWS
+			<iterate property="fields" conjunction="," >  
+				$fields[]$
+			</iterate>
+		from 
+			r_sell_contract_detail  
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="and" property="query.sell_contract_id">
+					sell_contract_id LIKE CONCAT('%', #query.sell_contract_id#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.product_contract_code">
+					product_contract_code LIKE CONCAT('%', #query.product_contract_code#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.company_contract_code">
+					company_contract_code LIKE CONCAT('%', #query.company_contract_code#, '%')
+			</isNotEmpty>	
+			<isNotEmpty prepend="and" property="query.product_name">
+					product_name LIKE CONCAT('%', #query.product_name#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.product_type">
+					product_type LIKE CONCAT('%', #query.product_type#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.product_code">
+					product_code LIKE CONCAT('%', #query.product_code#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.product_type_name">
+					product_type_name LIKE CONCAT('%', #query.product_type_name#, '%')
+			</isNotEmpty> 
+			<isNotEmpty prepend="and" property="query.status">
+					status = #query.status#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.customer_name">
+					customer_name LIKE CONCAT('%', #query.customer_name#, '%')
+			</isNotEmpty> 
+			<isNotEmpty prepend="and" property="query.user_name">
+					user_name LIKE CONCAT('%', #query.user_name#, '%')
+			</isNotEmpty> 
+			<isNotEmpty prepend="and" property="query.contract_pro_name">
+					contract_pro_name LIKE CONCAT('%', #query.contract_pro_name#, '%')
+			</isNotEmpty> 
+		<!--销售经理 自己创建的--> 
+		<isNotEmpty prepend="and"  property="userId"> 
+			r_sell_contract_detail.user_id=#userId#
+		</isNotEmpty> 
+		
+		<!--负责区域--> 
+		<isNotEmpty prepend="and" property="userAreaMappingList"> 
+				<iterate property="userAreaMappingList" open="(" close=")" conjunction="or" >  
+					 r_sell_contract_detail.user_area_id = #userAreaMappingList[].userAreaId#
+				</iterate>	
+		</isNotEmpty>
+		
+		<!-- 负责区域和产品分类 -->
+    	<isNotEmpty prepend="and" property="userAreaProductList"> 
+				<iterate property="userAreaProductList" open="(" close=")" conjunction="or" >  
+					 r_sell_contract_detail.user_area_id = #userAreaProductList[].userAreaId# and 
+					 r_sell_contract_detail.product_type_id = #userAreaProductList[].productTypeId# 
+				</iterate>	
+		</isNotEmpty> 
+		
+		<!--负责的产品分类--> 
+		<isNotEmpty prepend="and" property="userProductList"> 
+				<iterate property="userProductList" open="(" close=")" conjunction="or" >  
+					 r_sell_contract_detail.product_type_id = #userProductList[].productTypeId#
+				</iterate>	
+		</isNotEmpty>
+		
+		</dynamic>
+		order by $sidx$ $sord$ limit #star#,#rows#
+	</select>
+	<!-- 金额合计 -->
+	<select id="getSellContractDetailSumVal" parameterClass="queryDataBase" resultClass="sellContractDetailEntity">
+		select 
+			sum(sell_money) as sell_money ,
+			sum(send_goods_money) as send_goods_money ,
+			sum(fact_send_goods_money) as fact_send_goods_money ,
+			sum(send_goods_count) as send_goods_count ,
+			sum(fact_send_goods_count) as fact_send_goods_count ,
+			sum(prepare_goods) as prepare_goods ,
+			sum(stock_goods_count) as stock_goods_count ,
+			sum(appoint_money) as appoint_money ,
+			sum(in_transit_appoint_money) as in_transit_appoint_money ,
+			sum(sell_invoice_money) as sell_invoice_money ,
+			sum(back_contract_money) as back_contract_money ,
+			sum(back_contract_count) as back_contract_count ,
+			sum(back_money) as back_money ,
+			sum(back_count) as back_count ,
+			sum(fact_sell_count) as fact_sell_count ,
+			sum(contract_not_implemented_count) as contract_not_implemented_count ,
+			sum(count) as count
+		from r_sell_contract_detail
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="and" property="query.sell_contract_id">
+					sell_contract_id LIKE CONCAT('%', #query.sell_contract_id#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.product_contract_code">
+					product_contract_code LIKE CONCAT('%', #query.product_contract_code#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.company_contract_code">
+					company_contract_code LIKE CONCAT('%', #query.company_contract_code#, '%')
+			</isNotEmpty>	
+			<isNotEmpty prepend="and" property="query.product_name">
+					product_name LIKE CONCAT('%', #query.product_name#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.product_type">
+					product_type LIKE CONCAT('%', #query.product_type#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.product_code">
+					product_code LIKE CONCAT('%', #query.product_code#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.product_type_name">
+					product_type_name LIKE CONCAT('%', #query.product_type_name#, '%')
+			</isNotEmpty> 
+			<isNotEmpty prepend="and" property="query.status">
+					status = #query.status#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.customer_name">
+					customer_name LIKE CONCAT('%', #query.customer_name#, '%')
+			</isNotEmpty> 
+			<isNotEmpty prepend="and" property="query.user_name">
+					user_name LIKE CONCAT('%', #query.user_name#, '%')
+			</isNotEmpty> 
+			<isNotEmpty prepend="and" property="query.contract_pro_name">
+					contract_pro_name LIKE CONCAT('%', #query.contract_pro_name#, '%')
+			</isNotEmpty> 
+		<!--销售经理 自己创建的--> 
+		<isNotEmpty prepend="and"  property="userId"> 
+			r_sell_contract_detail.user_id=#userId#
+		</isNotEmpty> 
+		
+		<!--负责区域--> 
+		<isNotEmpty prepend="and" property="userAreaMappingList"> 
+				<iterate property="userAreaMappingList" open="(" close=")" conjunction="or" >  
+					 r_sell_contract_detail.user_area_id = #userAreaMappingList[].userAreaId#
+				</iterate>	
+		</isNotEmpty>
+		
+		<!-- 负责区域和产品分类 -->
+    	<isNotEmpty prepend="and" property="userAreaProductList"> 
+				<iterate property="userAreaProductList" open="(" close=")" conjunction="or" >  
+					 r_sell_contract_detail.user_area_id = #userAreaProductList[].userAreaId# and 
+					 r_sell_contract_detail.product_type_id = #userAreaProductList[].productTypeId# 
+				</iterate>	
+		</isNotEmpty> 
+		
+		<!--负责的产品分类--> 
+		<isNotEmpty prepend="and" property="userProductList"> 
+				<iterate property="userProductList" open="(" close=")" conjunction="or" >  
+					 r_sell_contract_detail.product_type_id = #userProductList[].productTypeId#
+				</iterate>	
+		</isNotEmpty>
+		
+		</dynamic>
+	</select>
+	  
+</sqlMap>
+

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset> 
+      <r_stock_product_detail
+        stockroom_name="1网络分销北京(商品)正常库"
+		product_type_name="康普产品"
+		product_serie_name="工具"
+		product_code="01.001.0001"
+		product_name="螺丝刀"
+		product_type="TF010001"
+		product_unit="把"
+		stockroom_count="99"
+		stockroom_price="108.33"
+		stockroom_money="10724.67" 
+      />
+      <r_stock_product_detail
+        stockroom_name="2网络分销北京(商品)正常库"
+		product_type_name="康普产品"
+		product_serie_name="工具"
+		product_code="01.001.0002"
+		product_name="改锥"
+		product_type="TF010002"
+		product_unit="把"
+		stockroom_count="43"
+		stockroom_price="53.00"
+		stockroom_money="2279.00" 
+      />
+     <r_stock_product_detail
+        stockroom_name="3网络分销上海(商品)正常库"
+		product_type_name="餐饮产品"
+		product_serie_name="饮品"
+		product_code="01.002.0001"
+		product_name="蒜味咖啡"
+		product_type="TF020001"
+		product_unit="盒"
+		stockroom_count="15623"
+		stockroom_price="20.45"
+		stockroom_money="319490.35" 
+      />
+      <r_stock_product_detail
+        stockroom_name="4网络分销广州(商品)正常库"
+		product_type_name="布线产品"
+		product_serie_name="机箱"
+		product_code="01.003.0001"
+		product_name="存储主机"
+		product_type="TF030001"
+		product_unit="台"
+		stockroom_count="10"
+		stockroom_price="5000.00"
+		stockroom_money="5000.00" 
+      />
+      <r_stock_product_detail
+        stockroom_name="5网络分销吉林(商品)正常库"
+		product_type_name="安防配件产品"
+		product_serie_name="BOX Camera 枪"
+		product_code="01.004.0001"
+		product_name="BOX Camera 枪机"
+		product_type="TF040001"
+		product_unit="把"
+		stockroom_count="785"
+		stockroom_price="21000.00"
+		stockroom_money="16485000.00" 
+      />
+	
+</dataset>

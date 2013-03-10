@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="common">
+
+	<typeAlias alias="promptQueryDto" type="cn.com.thtf.cms.report.dto.PromptQueryDto" />
+	<typeAlias alias="userAreaProductDto" type="cn.com.thtf.cms.report.dto.UserAreaProductDto" />
+	<typeAlias alias="userStockroomProductDto" type="cn.com.thtf.cms.report.dto.UserStockroomProductDto" />
+	<typeAlias alias="userAreaMappingDto" type="cn.com.thtf.cms.report.dto.UserAreaMappingDto" />
+	<typeAlias alias="userProductDto" type="cn.com.thtf.cms.report.dto.UserProductDto" />
+	
+	<!-- 根据用户ID检索负责的区域 -->
+	<select id="getUserAreaMapping" parameterClass="string" resultClass="userAreaMappingDto">
+		select 
+			user_area.id as userAreaId, 
+			user_area.name as userAreaName
+		from
+			user_area_mapping,user_area
+		where
+			user_id = #userId#
+		and	user_area_mapping.user_area_id = user_area.id
+	</select>
+	<!-- 根据用户ID检索负责的产品分类 -->
+	<select id="getUserProduct" parameterClass="string" resultClass="userProductDto">
+		select 
+			product_type_id as productTypeId, 
+			product_type.name as productTypeName
+		from
+			user_product,product_type 
+		where
+			user_id = #userId#
+		and user_product.product_type_id = product_type.id
+	</select>
+	
+	<select id="getPromptCustomerData" resultClass="java.lang.String" parameterClass="promptQueryDto">
+		select name from customer
+		<dynamic prepend="WHERE">
+			name like CONCAT('%', #queryKey#, '%')
+		</dynamic>
+	</select>
+	<select id="getPromptSupplierData" resultClass="java.lang.String" parameterClass="promptQueryDto">
+		select name from supplier
+		<dynamic prepend="WHERE">
+			name like CONCAT('%', #queryKey#, '%')
+		</dynamic>
+	</select>
+	<!-- 根据销售助理用户获取区域、产品分类id Begin -->
+	<select id="getAreaIdAndProductTypeIdOfRoldIs3" parameterClass="string" resultClass="userAreaProductDto">
+		select 
+			user_area_id as userAreaId,
+			product_type_id as productTypeId,
+			 user_area.name as userAreaName,
+			product_type.name as productTypeName
+		from user_area_product 
+		left join user_area on user_area.id = user_area_product.user_area_id
+		left join product_type on product_type.id = user_area_product.product_type_id
+		where  user_id=#userId#
+	</select>	          
+	<!-- 根据销售助理用户获取区域、产品分类id End -->
+	<!-- 根据用户id（区域总监 销售经理）获取区域、产品id  Begin -->
+	<select id="getAreaIdAndProductTypeIdOfRoldIs9" parameterClass="string" resultClass="userAreaProductDto">
+		select 
+			userArea.productTypeId,
+			userArea.userAreaId,
+			product_type.name as productTypeName,
+			user_area.name as userAreaName
+		from(
+			select  user_product.product_type_id as productTypeId,user.user_area_id as userAreaId
+				from    user_product,user
+				where   user_product.user_id =user.id  
+						and user_product.user_id = #userId# and user.id =#userId#
+		)as userArea
+		left join user_area on user_area.id = userArea.userAreaId
+		left join product_type on product_type.id = userArea.productTypeId
+	</select>	          
+	<!--根据用户id（区域总监 销售经理）获取区域、产品id  End -->
+	<!-- 检索库房管理员 --> 
+	<select id="getTreasuryManagerById" parameterClass="string" resultClass="userStockroomProductDto">
+		select 
+			stockroom_id as stockroomId,
+			product_type_id as productTypeId,
+			product_type.name as productTypeName,
+			stockroom.name as stockroomName
+		from 
+			user_stockroom_product 
+		left join product_type on product_type.id = user_stockroom_product.product_type_id
+		left join stockroom on stockroom.id = user_stockroom_product.stockroom_id
+		where 
+			user_id = #userId#
+	</select>
+</sqlMap>
+

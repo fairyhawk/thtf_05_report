@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <property resource="logback.properties" />
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%d [%t] %-5p %c - %m%n</pattern>
+      <charset>GBK</charset>
+    </encoder> 
+  </appender>
+  
+  <appender name="LOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <append>true</append>
+    <file>${LOG_DIR}/${LOG_FILE}.log</file>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%d [%t] %-5p %c - %m%n</pattern>
+      <charset>GBK</charset>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <maxIndex>10</maxIndex>
+      <fileNamePattern>${LOG_DIR}/${LOG_FILE}.%i.log.zip</fileNamePattern>
+    </rollingPolicy>
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <maxFileSize>10240kb</maxFileSize>
+    </triggeringPolicy>
+  </appender>
+  
+  <logger name="cn.com.thtf" level="DEBUG" />
+
+  <root level="OFF">
+    <appender-ref ref="CONSOLE"/>
+    <appender-ref ref="LOGFILE"/>
+  </root>
+
+</configuration>

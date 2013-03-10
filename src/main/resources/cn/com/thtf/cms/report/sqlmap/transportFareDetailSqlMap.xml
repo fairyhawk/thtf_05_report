@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="transportFareDetail">
+
+	<typeAlias alias="transportFareDetailEntity" type="cn.com.thtf.cms.report.entity.TransportFareDetailEntity" />
+	<typeAlias alias="queryDataBase" type="cn.com.thtf.cms.report.dto.BaseQueryData" />
+	<typeAlias alias="rTransportFareDetailDto" type="cn.com.thtf.cms.report.dto.RTransportFareDetailDto" />
+	
+	<select id="getTransportFareDetail" parameterClass="queryDataBase" resultClass="rTransportFareDetailDto" remapResults="true">
+		select 
+			SQL_CALC_FOUND_ROWS
+			<iterate property="fields" conjunction="," >  
+				$fields[]$
+			</iterate>
+		from 
+			r_transport_fare_detail 
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="and" property="query.logisticsName">
+					logistics_Name LIKE CONCAT('%', #query.logisticsName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.boxId">
+					box_Id LIKE CONCAT('%', #query.boxId#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.boxNo">
+					box_No LIKE CONCAT('%', #query.boxNo#, '%')
+			</isNotEmpty>	
+			<isNotEmpty prepend="and" property="query.stockroomName">
+					stockroom_Name LIKE CONCAT('%', #query.stockroomName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.customerName">
+					customer_Name LIKE CONCAT('%', #query.customerName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.tbcBeginDate">
+					<![CDATA[  (tbc_date is not null and DATE_FORMAT(tbc_date,'%Y%m%d')>=  DATE_FORMAT(#query.tbcBeginDate:DATE#,'%Y%m%d')) ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.tbcEndDate">
+					<![CDATA[  (tbc_date is not null and DATE_FORMAT(tbc_date,'%Y%m%d')<=  DATE_FORMAT(#query.tbcEndDate:DATE#,'%Y%m%d')) ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.address">
+					address LIKE CONCAT('%', #query.address#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productTypeName">
+					product_Type_Name LIKE CONCAT('%', #query.productTypeName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.statusName">
+					status_Name LIKE CONCAT('%', #query.statusName#, '%')
+			</isNotEmpty>
+		<!-- 销售总监、信用专员、采购主管、产品总监 -->
+		<isNotEmpty prepend="and" property="userProductList">
+			r_transport_fare_detail.product_Type_Name in (
+			<iterate property="userProductList" conjunction="," >  
+				#userProductList[].productTypeName#
+			</iterate>
+			)
+		</isNotEmpty>
+		</dynamic>
+		order by $sidx$ $sord$ limit #star#,#rows#
+	</select>
+	<select id="getTransportFareDetailSum" parameterClass="queryDataBase" resultClass="transportFareDetailEntity">
+		select 
+			ifnull(sum(count),0) as count,
+			ifnull(ROUND(sum(money),2),0) as money
+		from r_transport_fare_detail
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="and" property="query.logisticsName">
+					logistics_Name LIKE CONCAT('%', #query.logisticsName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.boxId">
+					box_Id LIKE CONCAT('%', #query.boxId#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.boxNo">
+					box_No LIKE CONCAT('%', #query.boxNo#, '%')
+			</isNotEmpty>	
+			<isNotEmpty prepend="and" property="query.stockroomName">
+					stockroom_Name LIKE CONCAT('%', #query.stockroomName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.customerName">
+					customer_Name LIKE CONCAT('%', #query.customerName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.tbcBeginDate">
+					<![CDATA[  (tbc_date is not null and DATE_FORMAT(tbc_date,'%Y%m%d')>=  DATE_FORMAT(#query.tbcBeginDate:DATE#,'%Y%m%d')) ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.tbcEndDate">
+					<![CDATA[  (tbc_date is not null and DATE_FORMAT(tbc_date,'%Y%m%d')<=  DATE_FORMAT(#query.tbcEndDate:DATE#,'%Y%m%d')) ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.address">
+					address LIKE CONCAT('%', #query.address#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productTypeName">
+					product_Type_Name LIKE CONCAT('%', #query.productTypeName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.statusName">
+					status_Name LIKE CONCAT('%', #query.statusName#, '%')
+			</isNotEmpty>
+		<!-- 销售总监、信用专员、采购主管、产品总监 -->
+		<isNotEmpty prepend="and" property="userProductList">
+			r_transport_fare_detail.product_Type_Name in (
+			<iterate property="userProductList" conjunction="," >  
+				#userProductList[].productTypeName#
+			</iterate>
+			)
+		</isNotEmpty>
+		</dynamic>
+	</select>
+</sqlMap>
+

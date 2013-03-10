@@ -1,0 +1,18 @@
+@charset "utf-8";
+/* CSS Document */
+INPUT{ 
+font-size: 12px;
+font-family:"宋体",Arial, Helvetica, sans-serif;
+}
+TEXTAREA{ 
+font-size: 12px; 
+font-family:"宋体",Arial, Helvetica, sans-serif;
+}
+BUTTON{
+font-size: 12px; 
+}
+SELECT{
+font-size: 13px; 
+font-family:"宋体",Arial, Helvetica, sans-serif;
+}
+

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="instockDetail">
+
+	<typeAlias alias="queryDataBase" type="cn.com.thtf.cms.report.dto.BaseQueryData" />
+	<typeAlias alias="instockDetailEntity"
+		type="cn.com.thtf.cms.report.entity.InstockDetailEntity" />
+	<typeAlias alias="instockDetailDto"
+		type="cn.com.thtf.cms.report.dto.InstockDetailDto" />
+
+	<select id="getInstockDetail" parameterClass="queryDataBase"
+		resultClass="instockDetailEntity" remapResults="true">
+		select
+		SQL_CALC_FOUND_ROWS
+		<iterate property="fields" conjunction=",">
+			$fields[]$
+			</iterate>
+		from
+		r_instock_detail
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="and" property="query.buyContractId">
+				buy_contract_id LIKE CONCAT('%', #query.buyContractId#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productContractCode">
+				product_contract_code LIKE CONCAT('%', #query.productContractCode#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.companyContractCode">
+				company_contract_code LIKE CONCAT('%', #query.companyContractCode#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productTypeName">
+				product_type_name LIKE CONCAT('%', #query.productTypeName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.instockId">
+				instock_id LIKE CONCAT('%', #query.instockId#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.stockroomName">
+				stockroom_name LIKE CONCAT('%', #query.stockroomName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.supplierName">
+				supplier_name LIKE CONCAT('%', #query.supplierName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.userName">
+				user_name LIKE CONCAT('%', #query.userName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.statusName">
+				status_name LIKE CONCAT('%', #query.statusName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productCode">
+				product_code LIKE CONCAT('%', #query.productCode#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productName">
+				product_name LIKE CONCAT('%', #query.productName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productType">
+				product_type LIKE CONCAT('%', #query.productType#, '%')
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="and" property="query.dateBegin">
+					<![CDATA[  DATE_FORMAT(date,'%Y%m%d')>=  DATE_FORMAT(#query.dateBegin:DATE#,'%Y%m%d')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.dateEnd">
+					<![CDATA[  DATE_FORMAT(date,'%Y%m%d')<=  DATE_FORMAT(#query.dateEnd:DATE#,'%Y%m%d')  ]]>
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="and" property="query.stockDateBegin">
+					<![CDATA[  DATE_FORMAT(stock_date,'%Y%m%d')>=  DATE_FORMAT(#query.stockDateBegin:DATE#,'%Y%m%d')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.stockDateEnd">
+					<![CDATA[  DATE_FORMAT(stock_date,'%Y%m%d')<=  DATE_FORMAT(#query.stockDateEnd:DATE#,'%Y%m%d')  ]]>
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="and" property="query.factorySendDateBegin">
+					<![CDATA[  DATE_FORMAT(factory_send_date,'%Y%m%d')>=  DATE_FORMAT(#query.factorySendDateBegin:DATE#,'%Y%m%d')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.factorySendDateEnd">
+					<![CDATA[  DATE_FORMAT(factory_send_date,'%Y%m%d')<=  DATE_FORMAT(#query.factorySendDateEnd:DATE#,'%Y%m%d')  ]]>
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="and" property="query.paymentDateBegin">
+					<![CDATA[  DATE_FORMAT(payment_date,'%Y%m%d')>=  DATE_FORMAT(#query.paymentDateBegin:DATE#,'%Y%m%d')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.paymentDateEnd">
+					<![CDATA[  DATE_FORMAT(payment_date,'%Y%m%d')<=  DATE_FORMAT(#query.paymentDateEnd:DATE#,'%Y%m%d')  ]]>
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="and" property="userProductList"> 
+				<iterate property="userProductList" open="(" close=")" conjunction="or" >  
+					product_type_name = #userProductList[].productTypeName#
+				</iterate>	
+			</isNotEmpty>
+		</dynamic>
+		order by $sidx$ $sord$ limit #star#,#rows#
+	</select>
+
+	<select id="getInstockDetailSum" parameterClass="queryDataBase"
+		resultClass="instockDetailDto">
+		select
+		round(sum(instock_totalmoney),2) as instockTotalmoneySum,
+		round(sum(instock_money),2) as instockMoneySum,
+		round(sum(back_money),2) as backMoneySum,
+		round(sum(stock_money_rel),2) as stockMoneyRelSum,
+		round(sum(appoint_money),2) as appointMoneySum,
+		round(sum(non_payment_money),2) as nonPaymentMoneySum,
+		round(sum(receive_invoice_money),2) as receiveInvoiceMoneySum
+		from
+		r_instock_detail
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="and" property="query.buyContractId">
+				buy_contract_id LIKE CONCAT('%', #query.buyContractId#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productContractCode">
+				product_contract_code LIKE CONCAT('%', #query.productContractCode#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.companyContractCode">
+				company_contract_code LIKE CONCAT('%', #query.companyContractCode#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productTypeName">
+				product_type_name LIKE CONCAT('%', #query.productTypeName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.instockId">
+				instock_id LIKE CONCAT('%', #query.instockId#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.stockroomName">
+				stockroom_name LIKE CONCAT('%', #query.stockroomName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.supplierName">
+				supplier_name LIKE CONCAT('%', #query.supplierName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.userName">
+				user_name LIKE CONCAT('%', #query.userName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.statusName">
+				status_name LIKE CONCAT('%', #query.statusName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productCode">
+				product_code LIKE CONCAT('%', #query.productCode#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productName">
+				product_name LIKE CONCAT('%', #query.productName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productType">
+				product_type LIKE CONCAT('%', #query.productType#, '%')
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="and" property="query.dateBegin">
+					<![CDATA[  DATE_FORMAT(date,'%Y%m%d')>=  DATE_FORMAT(#query.dateBegin:DATE#,'%Y%m%d')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.dateEnd">
+					<![CDATA[  DATE_FORMAT(date,'%Y%m%d')<=  DATE_FORMAT(#query.dateEnd:DATE#,'%Y%m%d')  ]]>
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="and" property="query.stockDateBegin">
+					<![CDATA[  DATE_FORMAT(stock_date,'%Y%m%d')>=  DATE_FORMAT(#query.stockDateBegin:DATE#,'%Y%m%d')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.stockDateEnd">
+					<![CDATA[  DATE_FORMAT(stock_date,'%Y%m%d')<=  DATE_FORMAT(#query.stockDateEnd:DATE#,'%Y%m%d')  ]]>
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="and" property="query.factorySendDateBegin">
+					<![CDATA[  DATE_FORMAT(factory_send_date,'%Y%m%d')>=  DATE_FORMAT(#query.factorySendDateBegin:DATE#,'%Y%m%d')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.factorySendDateEnd">
+					<![CDATA[  DATE_FORMAT(factory_send_date,'%Y%m%d')<=  DATE_FORMAT(#query.factorySendDateEnd:DATE#,'%Y%m%d')  ]]>
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="and" property="query.paymentDateBegin">
+					<![CDATA[  DATE_FORMAT(payment_date,'%Y%m%d')>=  DATE_FORMAT(#query.paymentDateBegin:DATE#,'%Y%m%d')  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.paymentDateEnd">
+					<![CDATA[  DATE_FORMAT(payment_date,'%Y%m%d')<=  DATE_FORMAT(#query.paymentDateEnd:DATE#,'%Y%m%d')  ]]>
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="and" property="userProductList"> 
+				<iterate property="userProductList" open="(" close=")" conjunction="or" >  
+					product_type_name = #userProductList[].productTypeName#
+				</iterate>	
+			</isNotEmpty>
+		</dynamic>
+	</select>
+</sqlMap>
+

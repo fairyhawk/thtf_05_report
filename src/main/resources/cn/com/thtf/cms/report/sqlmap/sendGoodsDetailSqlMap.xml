@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sendGoodsDetail">
+
+	<typeAlias alias="sendGoodsDetailEntity" type="cn.com.thtf.cms.report.entity.RSendGoodsDetailEntity" />
+	<typeAlias alias="queryDataBase" type="cn.com.thtf.cms.report.dto.BaseQueryData" />
+	<typeAlias alias="rSendGoodsDetailDto" type="cn.com.thtf.cms.report.dto.RSendGoodsDetailDto" />
+	
+	<select id="getSendGoodsDetail" parameterClass="queryDataBase" resultClass="rSendGoodsDetailDto" remapResults="true">
+		select 
+			SQL_CALC_FOUND_ROWS
+			<iterate property="fields" conjunction="," >  
+				$fields[]$
+			</iterate>
+		from 
+			r_send_goods_detail 
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="and" property="query.sellContractId">
+					sell_Contract_Id LIKE CONCAT('%', #query.sellContractId#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productContractCode">
+					product_Contract_Code LIKE CONCAT('%', #query.productContractCode#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.companyContractCode">
+					company_Contract_Code LIKE CONCAT('%', #query.companyContractCode#, '%')
+			</isNotEmpty>	
+			<isNotEmpty prepend="and" property="query.sendGoodsId">
+					send_Goods_Id LIKE CONCAT('%', #query.sendGoodsId#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productTypeName">
+					product_Type_Name LIKE CONCAT('%', #query.productTypeName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.sendBeginDate">
+					<![CDATA[  (send_Date is not null and DATE_FORMAT(send_Date,'%Y%m%d')>=  DATE_FORMAT(#query.sendBeginDate:DATE#,'%Y%m%d'))  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.sendEndDate">
+					<![CDATA[  (send_Date is not null and DATE_FORMAT(send_Date,'%Y%m%d')<=  DATE_FORMAT(#query.sendEndDate:DATE#,'%Y%m%d'))  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productCode">
+					product_Code LIKE CONCAT('%', #query.productCode#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.customerName">
+					customer_Name LIKE CONCAT('%', #query.customerName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productName">
+					product_Name LIKE CONCAT('%', #query.productName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productType">
+					product_Type LIKE CONCAT('%', #query.productType#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.contractProName">
+					contract_Pro_Name LIKE CONCAT('%', #query.contractProName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.sendGoodsStatusName">
+					send_goods_status_name = #query.sendGoodsStatusName#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.sendGoodsTypeName">
+					send_goods_type_name = #query.sendGoodsTypeName#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.userName">
+					user_name LIKE CONCAT('%', #query.userName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.requestReachBeginDate">
+					<![CDATA[  (request_Reach_Date is not null and DATE_FORMAT(request_Reach_Date,'%Y%m%d')>=  DATE_FORMAT(#query.requestReachBeginDate#,'%Y%m%d'))  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.requestReachEndDate">
+					<![CDATA[  (request_Reach_Date is not null and DATE_FORMAT(request_Reach_Date,'%Y%m%d')<=  DATE_FORMAT(#query.requestReachEndDate#,'%Y%m%d'))  ]]>
+			</isNotEmpty>
+			<!--销售助理-->
+			<isNotEmpty prepend="and" property="userAreaProductList">
+				<iterate property="userAreaProductList" open="(" close=")" conjunction="or" >  
+					(r_send_goods_detail.user_area_name=#userAreaProductList[].userAreaName# and r_send_goods_detail.product_type_name=#userAreaProductList[].productTypeName#)
+				</iterate>	
+			</isNotEmpty>
+			<!--区域总监-->
+			<isNotEmpty prepend="and" property="userAreaProductList">
+				<iterate property="userAreaProductList" open="(" close=")" conjunction="or" >  
+					(r_send_goods_detail.user_area_name=#userAreaProductList[].userAreaName# and r_send_goods_detail.product_type_name=#userAreaProductList[].productTypeName#)
+				</iterate>		
+			</isNotEmpty>
+			<!-- 销售经理 -->
+			<isNotEmpty prepend="and" property="userId"> 
+				r_send_goods_detail.user_id=#userId#
+			</isNotEmpty>	
+			<!--大区经理  区域经理 -->
+			<isNotEmpty prepend="and" property="userAreaMappingList">
+				r_send_goods_detail.user_area_name in(
+				<iterate property="userAreaMappingList" conjunction=",">  
+					#userAreaMappingList[].userAreaName#
+				</iterate>
+				)
+			</isNotEmpty>
+			<!-- 销售总监、信用专员、采购主管、产品总监 -->
+			<isNotEmpty prepend="and" property="userProductList">
+				r_send_goods_detail.product_Type_Name in (
+				<iterate property="userProductList" conjunction="," >  
+					#userProductList[].productTypeName#
+				</iterate>
+				)
+			</isNotEmpty>
+		</dynamic>
+		order by $sidx$ $sord$ limit #star#,#rows#
+	</select>
+	<!-- 合计  -->
+	<select id="getSendGoodsDetailSum" parameterClass="queryDataBase" resultClass="sendGoodsDetailEntity">
+		select 
+			sum(detail_count_rel) as detailCountRel,
+			ROUND(sum(detail_money_rel),2) as detailMoneyRel,
+			sum(back_count) as backCount,
+			ROUND(sum(back_money),2) as backMoney,
+			ROUND(sum(make_invoice_money),2) as makeInvoiceMoney,
+			ROUND(sum(appoint_money),2) as appointMoney,
+			ROUND(sum(appoint_money_otw),2) as appointMoneyOtw,
+			ROUND(sum(appoint_money_ext),2) as appointMoneyExt
+		from r_send_goods_detail
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="and" property="query.sellContractId">
+					sell_Contract_Id LIKE CONCAT('%', #query.sellContractId#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productContractCode">
+					product_Contract_Code LIKE CONCAT('%', #query.productContractCode#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.companyContractCode">
+					company_Contract_Code LIKE CONCAT('%', #query.companyContractCode#, '%')
+			</isNotEmpty>	
+			<isNotEmpty prepend="and" property="query.sendGoodsId">
+					send_Goods_Id LIKE CONCAT('%', #query.sendGoodsId#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productTypeName">
+					product_Type_Name LIKE CONCAT('%', #query.productTypeName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.sendBeginDate">
+					<![CDATA[  (send_Date is not null and DATE_FORMAT(send_Date,'%Y%m%d')>=  DATE_FORMAT(#query.sendBeginDate:DATE#,'%Y%m%d'))  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.sendEndDate">
+					<![CDATA[  (send_Date is not null and DATE_FORMAT(send_Date,'%Y%m%d')<=  DATE_FORMAT(#query.sendEndDate:DATE#,'%Y%m%d'))  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productCode">
+					product_Code LIKE CONCAT('%', #query.productCode#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.customerName">
+					customer_Name LIKE CONCAT('%', #query.customerName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productName">
+					product_Name LIKE CONCAT('%', #query.productName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productType">
+					product_Type LIKE CONCAT('%', #query.productType#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.contractProName">
+					contract_Pro_Name LIKE CONCAT('%', #query.contractProName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.sendGoodsStatusName">
+					send_goods_status_name = #query.sendGoodsStatusName#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.sendGoodsTypeName">
+					send_goods_type_name = #query.sendGoodsTypeName#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.userName">
+					user_name LIKE CONCAT('%', #query.userName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.requestReachBeginDate">
+					<![CDATA[  (request_Reach_Date is not null and DATE_FORMAT(request_Reach_Date,'%Y%m%d')>=  DATE_FORMAT(#query.requestReachBeginDate#,'%Y%m%d'))  ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.requestReachEndDate">
+					<![CDATA[  (request_Reach_Date is not null and DATE_FORMAT(request_Reach_Date,'%Y%m%d')<=  DATE_FORMAT(#query.requestReachEndDate#,'%Y%m%d'))  ]]>
+			</isNotEmpty>
+			<!--销售助理-->
+			<isNotEmpty prepend="and" property="userAreaProductList">
+				<iterate property="userAreaProductList" open="(" close=")" conjunction="or" >  
+					(r_send_goods_detail.user_area_name=#userAreaProductList[].userAreaName# and r_send_goods_detail.product_type_name=#userAreaProductList[].productTypeName#)
+				</iterate>	
+			</isNotEmpty>
+			<!--区域总监-->
+			<isNotEmpty prepend="and" property="userAreaProductList">
+				<iterate property="userAreaProductList" open="(" close=")" conjunction="or" >  
+					(r_send_goods_detail.user_area_name=#userAreaProductList[].userAreaName# and r_send_goods_detail.product_type_name=#userAreaProductList[].productTypeName#)
+				</iterate>		
+			</isNotEmpty>
+			<!-- 销售经理 -->
+			<isNotEmpty prepend="and" property="userId"> 
+				r_send_goods_detail.user_id=#userId#
+			</isNotEmpty>	
+			<!--大区经理  区域经理 -->
+			<isNotEmpty prepend="and" property="userAreaMappingList">
+				r_send_goods_detail.user_area_name in(
+				<iterate property="userAreaMappingList" conjunction=",">  
+					#userAreaMappingList[].userAreaName#
+				</iterate>
+				)
+			</isNotEmpty>
+			<!-- 销售总监、信用专员、采购主管、产品总监 -->
+			<isNotEmpty prepend="and" property="userProductList">
+				r_send_goods_detail.product_Type_Name in (
+				<iterate property="userProductList" conjunction="," >  
+					#userProductList[].productTypeName#
+				</iterate>
+				)
+			</isNotEmpty>
+		</dynamic>
+	</select>
+</sqlMap>
+

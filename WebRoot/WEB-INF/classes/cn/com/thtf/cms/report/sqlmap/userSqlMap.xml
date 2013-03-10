@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="user">
+
+	<typeAlias alias="user" type="cn.com.thtf.cms.report.entity.UserEntity" />
+
+	<select id="selectUserById" parameterClass="string" resultClass="user">
+		SELECT
+		  user.id,
+		  user.name,
+		  user.password,
+		  user.tel,
+		  user.mobile,
+		  user.mail,
+		  user.msn,
+		  user.qq,
+		  user.datetime,
+		  user.enable,
+		  user.online,
+		  user.role_id roleId,
+		  user.user_area_id,
+		  user.user_dept_id,
+		  user.logistics_id
+		FROM USER USER
+		WHERE user.id = #id#
+	</select>
+
+</sqlMap>
+

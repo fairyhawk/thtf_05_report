@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="stockProductDetail">
+
+	<typeAlias alias="queryDataBase" type="cn.com.thtf.cms.report.dto.BaseQueryData" /> 
+	<typeAlias alias="stockProductDetailEntity" type="cn.com.thtf.cms.report.entity.StockProductDetailEntity" />
+	<typeAlias alias="stockProductDetailDto" type="cn.com.thtf.cms.report.dto.StockProductDetailDto" /> 
+	
+	<select id="getStockProductDetail" parameterClass="queryDataBase" resultClass="stockProductDetailEntity" remapResults="true">
+		select
+			SQL_CALC_FOUND_ROWS
+			<iterate property="fields" conjunction="," >  
+				$fields[]$
+			</iterate>
+		from 
+			r_stock_product_detail 
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="and" property="query.stockroomName">
+					stockroom_name LIKE CONCAT('%', #query.stockroomName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productTypeName">
+					product_type_name LIKE CONCAT('%', #query.productTypeName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productSerieName">
+					product_serie_name LIKE CONCAT('%', #query.productSerieName#, '%')
+			</isNotEmpty>	
+			<isNotEmpty prepend="and" property="query.productCode">
+					product_code LIKE CONCAT('%', #query.productCode#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productName">
+					product_name LIKE CONCAT('%', #query.productName#, '%')
+			</isNotEmpty>
+		 	<isNotEmpty prepend="and" property="query.productType">
+					product_type LIKE CONCAT('%', #query.productType#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="userProductList"> 
+				<iterate property="userProductList" open="(" close=")" conjunction="or" >  
+					product_type_name = #userProductList[].productTypeName#
+				</iterate>	
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="userStockroomProductList">
+				<iterate property="userStockroomProductList" open="(" close=")" conjunction="or" >  
+						(stockroom_name = #userStockroomProductList[].stockroomName# 
+					and product_type_name = #userStockroomProductList[].productTypeName#)
+				</iterate>
+			</isNotEmpty> 
+		</dynamic> 
+		order by $sidx$ $sord$ limit #star#,#rows#
+	</select>
+	
+	<select id="getStockProductDetailSum" parameterClass="queryDataBase" resultClass="stockProductDetailDto">
+		select 
+			sum(stockroom_count) as productCountSum,
+			round(sum(stockroom_money),2) as stockroomMoneySum
+		from 
+			r_stock_product_detail 
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="and" property="query.stockroomName">
+					stockroom_name LIKE CONCAT('%', #query.stockroomName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productTypeName">
+					product_type_name LIKE CONCAT('%', #query.productTypeName#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productSerieName">
+					product_serie_name LIKE CONCAT('%', #query.productSerieName#, '%')
+			</isNotEmpty>	
+			<isNotEmpty prepend="and" property="query.productCode">
+					product_code LIKE CONCAT('%', #query.productCode#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.productName">
+					product_name LIKE CONCAT('%', #query.productName#, '%')
+			</isNotEmpty>
+		 	<isNotEmpty prepend="and" property="query.productType">
+					product_type LIKE CONCAT('%', #query.productType#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="userProductList"> 
+				<iterate property="userProductList" open="(" close=")" conjunction="or" >  
+					product_type_name = #userProductList[].productTypeName#
+				</iterate>	
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="userStockroomProductList">
+				<iterate property="userStockroomProductList" open="(" close=")" conjunction="or" >  
+						(stockroom_name = #userStockroomProductList[].stockroomName# 
+					and product_type_name = #userStockroomProductList[].productTypeName#)
+				</iterate>
+			</isNotEmpty> 
+		</dynamic> 
+	</select>
+</sqlMap>
+

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="siteInformation">
+
+	<typeAlias alias="queryDataBase" type="cn.com.thtf.cms.report.dto.BaseQueryData" /> 
+	<typeAlias alias="siteInformationEntity" type="cn.com.thtf.cms.report.entity.SiteInformationEntity" />
+	<typeAlias alias="siteInformationDto" type="cn.com.thtf.cms.report.dto.SiteInformationDto" /> 
+	<typeAlias alias="siteInfoEntity" type="cn.com.thtf.cms.report.entity.SiteInformationEntity" />
+	<typeAlias alias="siteInformationOfShowDto" type="cn.com.thtf.cms.report.dto.SiteInformationOfShowDto" />
+	
+	<!-- 主页获取滚动信息的缓存,当新建修改删除站内信时刷新 -->
+	<cacheModel id="resultCache" type ="LRU" readOnly="false">
+		<flushInterval hours="24"/>
+		<flushOnExecute statement="addSiteInfoById"/>
+		<flushOnExecute statement="updateSiteInfoById"/>
+		<flushOnExecute statement="deleteSiteInfoById"/>
+		<property name="cache-size" value="100" />
+	</cacheModel>
+	
+	<!-- 获取站内信检索 -->
+	<select id="getSiteInformationList" parameterClass="queryDataBase" resultClass="siteInformationEntity" remapResults="true">
+		select
+			SQL_CALC_FOUND_ROWS
+			id as id,
+			subject as subject,
+			text as text,
+			roll_flag as rollFlag,
+			user_id as userId,
+			datetime as datetime,
+			upd_time as updTime,
+			filename as filename,
+			filepath as filepath
+		from 
+			site_information
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="and" property="query.subject">
+					subject LIKE CONCAT('%', #query.subject#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.text">
+					text LIKE CONCAT('%', #query.text#, '%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="query.filename">
+					filename != ''
+			</isNotEmpty> 
+		</dynamic> 
+		order by id limit #star#,#rows#
+	</select> 
+	
+	<!-- 获取站内信内容 -->
+	<select id="selectSiteInfoById" parameterClass="int" resultClass="siteInfoEntity">
+		SELECT 	`id` , 
+				`subject`, 
+				`text`, 
+				`roll_flag` as rollFlag, 
+				`user_id` as userId, 
+				`datetime`, 
+				`upd_time` as updTime, 
+				`filename`, 
+				`filepath`
+		FROM 
+		site_information 
+		where id=#id#
+	</select>
+	
+	<!-- 新增站内信 -->
+	<insert id="addSiteInfoById" parameterClass="siteInfoEntity">
+		INSERT INTO `site_information` 
+					( 
+					`subject`, 
+					`text`, 
+					`roll_flag`, 
+					`user_id`, 
+					`datetime`, 
+					`filename`, 
+					`filepath`
+					)
+					VALUES
+					(
+					#subject#, 
+					#text#, 
+					#rollFlag#, 
+					#userId#, 
+					date_format(now(),'%Y-%m-%d'), 
+					#filename#, 
+					#filepath#
+					);
+	</insert>
+	
+	<!-- 修改站内信 -->
+	<update id="updateSiteInfoById" parameterClass="siteInfoEntity">
+		UPDATE `site_information` 
+				SET
+				`subject` = #subject# , 
+				`text` = #text# , 
+				`roll_flag` = #rollFlag# , 
+				`user_id` = #userId# , 
+				`filename` = #filename# , 
+				`filepath` = #filepath#
+				WHERE
+				`id` = #id# 
+	</update>
+	
+	<!-- 主页获取滚动信息 -->
+	<select id="getSubject" resultClass="siteInfoEntity" cacheModel="resultCache">
+		select id,subject,text from site_information where roll_flag = 0
+	</select>
+	
+	<!-- 主页获取滚动信息 -->
+	<select id="getSiteInfoScollList" resultClass="siteInformationOfShowDto" parameterClass="queryDataBase" remapResults="true">
+		select 
+	      id,subject,text,filename,filepath,roll_flag,datetime 
+	    from 
+	      site_information
+	    where roll_flag = 0
+			order by id desc
+	</select>
+	
+	<!-- 主页获取历史信息 -->
+	<select id="getSiteInfoHistoryList" resultClass="siteInformationOfShowDto" parameterClass="queryDataBase" remapResults="true">
+		select 
+	      SQL_CALC_FOUND_ROWS
+	      id,subject,text,filename,filepath,roll_flag,datetime 
+	    from 
+	      site_information
+	    where roll_flag = 1
+			order by id desc limit #star#,#rows#
+	</select>
+	
+	<!-- 删除站内信 -->
+	<delete id="deleteSiteInfoById" parameterClass="int">
+		DELETE FROM `site_information` 
+					WHERE
+					`id` = #id# 
+	</delete>
+</sqlMap>
+

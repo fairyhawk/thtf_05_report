@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="dynamicStocktake">
+	<typeAlias alias="rDynamicStocktakeEntity"
+		type="cn.com.thtf.cms.report.entity.RDynamicStocktakeEntity" />
+	<typeAlias alias="queryDataBase" type="cn.com.thtf.cms.report.dto.BaseQueryData" />
+	<select id="getStocktakeList" parameterClass="queryDataBase"
+		resultClass="rDynamicStocktakeEntity" remapResults="true">
+		SELECT
+		SQL_CALC_FOUND_ROWS
+		<iterate property="fields" conjunction=",">
+			$fields[]$
+			</iterate>
+		FROM R_DYNAMIC_STOCKTAKE
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="query.stockName">
+				stock_name LIKE CONCAT('%',#query.stockName#,'%')
+    			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.productCode">
+				product_code LIKE CONCAT('%',#query.productCode#,'%')
+    			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.productName">
+				product_name LIKE CONCAT('%',#query.productName#,'%')
+    			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.productType">
+				product_type LIKE CONCAT('%',#query.productType#,'%')
+    			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.productUnit">
+				product_unit LIKE CONCAT('%',#query.productUnit#,'%')
+    			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="query.shortName">
+				short_name LIKE CONCAT('%',#query.shortName#,'%')
+    			</isNotEmpty>
+			<isNotEmpty prepend="and" property="userProductList">
+				<iterate property="userProductList" open="(" close=")"
+					conjunction="or">
+					product_type_id = #userProductList[].productTypeId#
+					</iterate>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="userStockroomProductList">
+				<iterate property="userStockroomProductList" open="(" close=")"
+					conjunction="or">
+					product_type_id= #userStockroomProductList[].productTypeId# and
+					stockroom_id =#userStockroomProductList[].stockroomId# 
+					</iterate>
+			</isNotEmpty>
+		</dynamic>
+		order by $sidx$ $sord$ limit #star#,#rows#
+	</select>
+</sqlMap>

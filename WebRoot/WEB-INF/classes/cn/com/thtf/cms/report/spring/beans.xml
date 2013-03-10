@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!-- user -->
+	<bean id="userDao" class="cn.com.thtf.cms.report.daoimpl.UserDaoImpl" parent="genericDao" />
+	<bean id="userService" class="cn.com.thtf.cms.report.serviceimpl.UserServiceImpl">
+		<property name="userDao" ref="userDao" />
+	</bean>
+	<!-- 发货明细  -->
+	<bean id="sendGoodsDetailDao" class="cn.com.thtf.cms.report.daoimpl.RSendGoodsDetailDaoImpl" parent="genericDao" />
+	<bean id="sendGoodsDetailService" class="cn.com.thtf.cms.report.serviceimpl.RSendGoodsDetailServiceImpl">
+		<property name="sendGoodsDetailDao" ref="sendGoodsDetailDao" />
+	</bean>
+	<!-- 库存产品明细  -->
+	<bean id="stockProductDetailDao" class="cn.com.thtf.cms.report.daoimpl.StockProductDetailDaoImpl" parent="genericDao" />
+	<bean id="stockProductDetailService" class="cn.com.thtf.cms.report.serviceimpl.StockProductDetailServiceImpl">
+		<property name="dao" ref="stockProductDetailDao" />
+	</bean>
+	<!-- 运费明细  -->
+	<bean id="transportFareDetailDao" class="cn.com.thtf.cms.report.daoimpl.RTransportFareDetailDaoImpl" parent="genericDao" />
+	<bean id="transportFareDetailService" class="cn.com.thtf.cms.report.serviceimpl.RTransportFareDetailServiceImpl">
+		<property name="transportFareDetailDao" ref="transportFareDetailDao" />
+	</bean>	
+	 <!--  动态盘点 -->
+	<bean id="rDynamicStocktakeDao" class="cn.com.thtf.cms.report.daoimpl.RDynamicStocktakeDaoImpl" parent="genericDao" />
+	<bean id="rDynamicStocktakeService" class="cn.com.thtf.cms.report.serviceimpl.RDynamicStocktakeServiceImpl">
+		<property name="rDynamicStocktakeDao" ref="rDynamicStocktakeDao" />
+	</bean>
+	<!--  采购合同明细  --> 
+	<bean id="rBuyContractDetailDao" class="cn.com.thtf.cms.report.daoimpl.RBuyContractDetailDaoImpl" parent="genericDao" />
+	<bean id="rBuyContractDetailService" class="cn.com.thtf.cms.report.serviceimpl.RBuyContractDetailServiceImpl">
+		<property name="rBuyContractDetailDao" ref="rBuyContractDetailDao" />
+	</bean>	
+	<!-- 运费分摊  -->
+	<bean id="transportFareSharingDao" class="cn.com.thtf.cms.report.daoimpl.TransportFareSharingDaoImpl" parent="genericDao" />
+	<bean id="transportFareSharingService" class="cn.com.thtf.cms.report.serviceimpl.TransportFareSharingServiceImpl">
+		<property name="dao" ref="transportFareSharingDao" />
+	</bean>
+	<!-- 入库明细  -->
+	<bean id="instockDetailDao" class="cn.com.thtf.cms.report.daoimpl.InstockDetailDaoImpl" parent="genericDao" />
+	<bean id="instockDetailService" class="cn.com.thtf.cms.report.serviceimpl.InstockDetailServiceImpl">
+		<property name="dao" ref="instockDetailDao" />
+	</bean>		
+	<!-- constant -->
+	<bean id="constant" class="cn.com.thtf.cms.report.constant.Constants" init-method="init" />
+	<!-- cacheMgr -->
+	<bean id="cacheMgr" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" lazy-init="true">
+		<property name="configLocation" value="classpath:/ehcache.xml" />
+	</bean>
+	<!-- loginTokenCache -->
+	<bean id="loginTokenCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean" lazy-init="true">
+		<property name="cacheManager" ref="cacheMgr" />
+		<property name="cacheName" value="LoginTokenCache" />
+	</bean>
+	<!--
+	<bean id="downloadCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean" lazy-init="true">
+		<property name="cacheManager" ref="cacheMgr" />
+		<property name="cacheName" value="DownloadCache" />
+	</bean>
+	 -->
+	<!-- 自动提示框查询  -->
+	<bean id="commonDao" class="cn.com.thtf.cms.report.daoimpl.CommonDaoImpl" parent="genericDao" />
+	<bean id="commonService" class="cn.com.thtf.cms.report.serviceimpl.CommonServiceImpl">
+		<property name="commonDao" ref="commonDao" />
+	</bean>	
+	<!-- 销售合同产品明细 --> 
+	<bean id="sellContractDetailDao" class="cn.com.thtf.cms.report.daoimpl.RSellContractDetailDaoImpl" parent="genericDao" />
+	
+	<bean id="sellContractDetailService" class="cn.com.thtf.cms.report.serviceimpl.RSellContractDetailServiceImpl">
+		<property name="sellContractDetailDao" ref="sellContractDetailDao" />
+	</bean>
+	<!-- 站内信 --> 
+	<bean id="siteInformationDao" class="cn.com.thtf.cms.report.daoimpl.base.SiteInformationDaoImpl" parent="genericDao" />
+	<bean id="siteInformationService" class="cn.com.thtf.cms.report.serviceimpl.base.SiteInformationServiceImpl">
+		<property name="siteInfoDao" ref="siteInformationDao" />
+	</bean>
+	
+</beans>
